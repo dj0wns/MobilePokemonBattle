@@ -1,12 +1,15 @@
 package com.dj0wns.pokemon.mobilepokemonbattle.Fragments;
 
+import android.app.Fragment;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,7 +25,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class BattleFragment extends AppCompatActivity {
+public class BattleFragment extends Fragment {
 
     private static String url = "http://bulbapedia.bulbagarden" +
             ".net/wiki/List_of_Pok%C3%A9mon_by_National_Pok%C3%A9dex_number";
@@ -30,6 +33,7 @@ public class BattleFragment extends AppCompatActivity {
     private static int POKEMON_NAME_CELL_NUMBER = 3;
     private static int OPPONENT_POKEMON_NUMBER = 295;
     private static int USER_POKEMON_NUMBER = 125;
+    private static int NORMALIZED_STAT_TOTAL = 450;
     private static String POKEMON_LEVEL = "Lv50";
 
 
@@ -37,36 +41,39 @@ public class BattleFragment extends AppCompatActivity {
     private PopulateNationalDex population;
 
     private ImageView opponentImage;
-    private TextView opponentName;
-    private TextView opponentLevel;
+    private TextView opponentName, opponentLevel;
     private ImageView userImage;
-    private TextView userName;
-    private TextView userLevel;
+    private TextView userName, userLevel;
+    private Button moveSlot1, moveSlot2, moveSlot3, moveSlot4;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_battle);
-
-        opponentImage = (ImageView) findViewById(R.id.opponent_pokemon_image_view);
-        opponentName = (TextView) findViewById(R.id.opponent_pokemon_name);
-        opponentLevel = (TextView) findViewById(R.id.opponent_pokemon_level);
-        userImage = (ImageView) findViewById(R.id.user_pokemon_image_view);
-        userName = (TextView) findViewById(R.id.user_pokemon_name);
-        userLevel = (TextView) findViewById(R.id.user_pokemon_level);
-        setFonts();
-        population = new PopulateNationalDex();
-        population.execute();
-
-
-
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.battle_fragment, container, false);
+        return view;
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_pokemon, menu);
-        return true;
+    public void onStart(){
+        super.onStart();
+        opponentImage = (ImageView) getView().findViewById(R.id
+                .opponent_pokemon_image_view);
+        opponentName = (TextView) getView().findViewById(R.id
+                .opponent_pokemon_name);
+        opponentLevel = (TextView) getView().findViewById(R.id
+                .opponent_pokemon_level);
+        userImage = (ImageView) getView().findViewById(R.id
+                .user_pokemon_image_view);
+        userName = (TextView) getView().findViewById(R.id.user_pokemon_name);
+        userLevel = (TextView) getView().findViewById(R.id.user_pokemon_level);
+        moveSlot1 = (Button) getView().findViewById(R.id.move_slot_1);
+        moveSlot2 = (Button) getView().findViewById(R.id.move_slot_2);
+        moveSlot3 = (Button) getView().findViewById(R.id.move_slot_3);
+        moveSlot4 = (Button) getView().findViewById(R.id.move_slot_4);
+        setFonts();
+        population = new PopulateNationalDex();
+        population.execute();
     }
 
     @Override
@@ -84,8 +91,9 @@ public class BattleFragment extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setFonts(){
-        Typeface font = Typeface.createFromAsset(getAssets(), "Pokemon_DPPt.ttf");
+    private void setFonts() {
+        Typeface font = Typeface.createFromAsset(getActivity().getAssets(),
+                "Pokemon_DPPt.ttf");
         opponentName.setTypeface(font);
         opponentLevel.setTypeface(font);
         userName.setTypeface(font);
@@ -98,7 +106,6 @@ public class BattleFragment extends AppCompatActivity {
      * pokemon number to name
      */
     public class PopulateNationalDex extends AsyncTask<Void, Void, Void> {
-
 
 
         @Override
@@ -133,8 +140,9 @@ public class BattleFragment extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void result) {
-            FetchPokemonData fetch = new FetchPokemonData(opponentImage, 50);
-            FetchPokemonData fetch2 = new FetchPokemonData(userImage, 50);
+            FetchPokemonData fetch = new FetchPokemonData(opponentImage, NORMALIZED_STAT_TOTAL);
+            FetchPokemonData fetch2 = new FetchPokemonData(userImage, moveSlot1,
+                    moveSlot2, moveSlot3, moveSlot4, NORMALIZED_STAT_TOTAL);
             String toFetch = pokemap.get((int) (Math.random() * pokemap.size()));
             String toFetch2 = pokemap.get((int) (Math.random() * pokemap.size()));
 

@@ -110,14 +110,14 @@
                     android:id="@+id/move_slot_1"
                     android:text="Button"
                     style="@style/move_button"
-                    android:background="@drawable/button_red"
+                    android:background="@drawable/button_steel"
                     android:layout_weight="1"
                     />
                 <Button
                     android:id="@+id/move_slot_2"
                     android:text="Button"
                     style="@style/move_button"
-                    android:background="@drawable/button_blue"
+                    android:background="@drawable/button_psychic"
                     android:layout_weight="1"
                     />
             </LinearLayout>
@@ -130,14 +130,14 @@
                     android:id="@+id/move_slot_3"
                     android:text="Button"
                     style="@style/move_button"
-                    android:background="@drawable/button_yellow"
+                    android:background="@drawable/button_electric"
                     android:layout_weight="1"
                     />
                 <Button
                     android:id="@+id/move_slot_4"
                     style="@style/move_button"
                     android:text="Button"
-                    android:background="@drawable/button_green"
+                    android:background="@drawable/button_grass"
                     android:layout_weight="1"
                     />
             </LinearLayout>

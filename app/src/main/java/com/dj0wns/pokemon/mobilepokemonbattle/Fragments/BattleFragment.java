@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.dj0wns.pokemon.mobilepokemonbattle.DataStructures.move;
 import com.dj0wns.pokemon.mobilepokemonbattle.NetworkTasks.FetchPokemonData;
 import com.dj0wns.pokemon.mobilepokemonbattle.R;
 
@@ -24,17 +25,19 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Vector;
 
 public class BattleFragment extends Fragment {
 
-    private static String url = "http://bulbapedia.bulbagarden" +
+    private static String POKEDEX_URL = "http://bulbapedia.bulbagarden" +
             ".net/wiki/List_of_Pok%C3%A9mon_by_National_Pok%C3%A9dex_number";
+    private static String MOVEDEX_URL = "http://pokemondb.net/move/all";
     private static int NATNL_DEX_CELL_NUMBER = 1;
     private static int POKEMON_NAME_CELL_NUMBER = 3;
-    private static int OPPONENT_POKEMON_NUMBER = 295;
-    private static int USER_POKEMON_NUMBER = 125;
     private static int NORMALIZED_STAT_TOTAL = 450;
     private static String POKEMON_LEVEL = "Lv50";
+
+    private Vector<move> movedex;
 
 
     private HashMap<Integer, String> pokemap;
@@ -115,7 +118,7 @@ public class BattleFragment extends Fragment {
             int key;
 
             try {
-                doc = Jsoup.connect(url).get();
+                doc = Jsoup.connect(POKEDEX_URL).get();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -155,6 +158,50 @@ public class BattleFragment extends Fragment {
             Log.d("pokemon", toFetch);
             fetch.execute(toFetch);
             fetch2.execute(toFetch2);
+        }
+    }
+
+    /**
+     * Created by dj0wns on 8/28/15.
+     * Intended to populate the national dex to allow for easy translation from
+     * pokemon number to name
+     */
+    public class DownloadMoveData extends AsyncTask<Void, Void, Void> {
+
+
+        @Override
+        protected Void doInBackground(Void... params) {
+//            Document doc = null;
+//            pokemap = new HashMap<>();
+//            int key;
+//
+//            try {
+//                doc = Jsoup.connect(url).get();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            for (Element table : doc.select("table")) {
+//                for (Element row : table.select("tr")) {
+//                    Elements tds = row.select("td");
+//                    if (tds.size() > POKEMON_NAME_CELL_NUMBER) {
+//                        try {
+//                            key = Integer.parseInt(tds.get(NATNL_DEX_CELL_NUMBER)
+//                                    .text()
+//                                    .substring(1)); //ignore the '#' char
+//                            pokemap.put(key, tds.get(POKEMON_NAME_CELL_NUMBER)
+//                                    .text());
+//                        } catch (NumberFormatException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
         }
     }
 

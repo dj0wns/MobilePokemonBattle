@@ -2,13 +2,13 @@ package com.dj0wns.pokemon.mobilepokemonbattle.DataStructures;
 
 /**
  * Created by dj0wns on 9/2/15.
- * Contains complete data on a move
+ * Contains complete data on a Move
  */
-public class move {
+public class Move {
     private String name, type, category, effect;
     private int power, accuracy, powerPoints, probability;
 
-    public move(String name, String type, String category, String effect,
+    public Move(String name, String type, String category, String effect,
                 int power, int accuracy, int powerPoints, int probability) {
         this.name = name;
         this.type = type;

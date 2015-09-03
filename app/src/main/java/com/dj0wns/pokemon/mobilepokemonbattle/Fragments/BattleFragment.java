@@ -14,7 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
-import com.dj0wns.pokemon.mobilepokemonbattle.DataStructures.move;
+import com.dj0wns.pokemon.mobilepokemonbattle.DataStructures.Move;
+import com.dj0wns.pokemon.mobilepokemonbattle.DataStructures.Pokemon;
 import com.dj0wns.pokemon.mobilepokemonbattle.NetworkTasks.FetchPokemonData;
 import com.dj0wns.pokemon.mobilepokemonbattle.R;
 
@@ -29,18 +30,17 @@ import java.util.Vector;
 
 public class BattleFragment extends Fragment {
 
-    private static String POKEDEX_URL = "http://bulbapedia.bulbagarden" +
-            ".net/wiki/List_of_Pok%C3%A9mon_by_National_Pok%C3%A9dex_number";
+    private static String POKEDEX_URL = "http://pokemondb.net/pokedex/all";
     private static String MOVEDEX_URL = "http://pokemondb.net/move/all";
     private static int NATNL_DEX_CELL_NUMBER = 1;
-    private static int POKEMON_NAME_CELL_NUMBER = 3;
+    private static int POKEMON_NAME_CELL_NUMBER = 9;
     private static int NORMALIZED_STAT_TOTAL = 450;
     private static String POKEMON_LEVEL = "Lv50";
 
-    private Vector<move> movedex;
+    private Vector<Move> movedex;
 
 
-    private HashMap<Integer, String> pokemap;
+    private HashMap<Integer, Pokemon> pokemap;
     private PopulateNationalDex population;
 
     private ImageView opponentImage;
@@ -58,7 +58,7 @@ public class BattleFragment extends Fragment {
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         opponentImage = (ImageView) getView().findViewById(R.id
                 .opponent_pokemon_image_view);
@@ -106,7 +106,7 @@ public class BattleFragment extends Fragment {
     /**
      * Created by dj0wns on 8/28/15.
      * Intended to populate the national dex to allow for easy translation from
-     * pokemon number to name
+     * Pokemon number to name
      */
     public class PopulateNationalDex extends AsyncTask<Void, Void, Void> {
 
@@ -115,23 +115,51 @@ public class BattleFragment extends Fragment {
         protected Void doInBackground(Void... params) {
             Document doc = null;
             pokemap = new HashMap<>();
-            int key;
+            int key, totalStat, attack, defense, speed, hp, specialDefense,
+                    specialAttack;
+            String name, type1, type2;
+            Pokemon pokemon;
 
             try {
                 doc = Jsoup.connect(POKEDEX_URL).get();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            for (Element table : doc.select("table")) {
+            for (Element table : doc.select("table#pokedex")) {
                 for (Element row : table.select("tr")) {
                     Elements tds = row.select("td");
                     if (tds.size() > POKEMON_NAME_CELL_NUMBER) {
                         try {
-                            key = Integer.parseInt(tds.get(NATNL_DEX_CELL_NUMBER)
-                                    .text()
-                                    .substring(1)); //ignore the '#' char
-                            pokemap.put(key, tds.get(POKEMON_NAME_CELL_NUMBER)
+                            key = Integer.parseInt(tds.get(0)
                                     .text());
+                            Log.d("key", key + "");
+                            name = tds.get(1).text();
+                            Elements a = tds.get(2).select("a");
+                            type1 = a.get(0).text();
+                            if(a.size() > 1){
+                                type2 = a.get(1).text();
+                            } else {
+                                type2 = null;
+                            }
+                            totalStat = Integer.parseInt(tds.get(3)
+                                    .text());
+                            hp = Integer.parseInt(tds.get(4)
+                                    .text());
+                            attack= Integer.parseInt(tds.get(5)
+                                    .text());
+                            defense = Integer.parseInt(tds.get(6)
+                                    .text());
+                            specialAttack = Integer.parseInt(tds.get(7)
+                                    .text());
+                            specialDefense = Integer.parseInt(tds.get(8)
+                                    .text());
+                            speed = Integer.parseInt(tds.get(9)
+                                    .text());
+                            pokemon = new Pokemon(name, type1, type2, totalStat,
+                                    hp, attack, defense, specialAttack,
+                                    specialDefense, speed);
+
+                            pokemap.put(key, pokemon);
                         } catch (NumberFormatException e) {
                             e.printStackTrace();
                         }
@@ -143,11 +171,13 @@ public class BattleFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void result) {
-            FetchPokemonData fetch = new FetchPokemonData(opponentImage, NORMALIZED_STAT_TOTAL);
+            FetchPokemonData fetch = new FetchPokemonData(opponentImage,
+                    NORMALIZED_STAT_TOTAL);
             FetchPokemonData fetch2 = new FetchPokemonData(userImage, moveSlot1,
                     moveSlot2, moveSlot3, moveSlot4, NORMALIZED_STAT_TOTAL);
-            String toFetch = pokemap.get((int) (Math.random() * pokemap.size()));
-            String toFetch2 = pokemap.get((int) (Math.random() * pokemap.size()));
+            String toFetch = pokemap.get((int) (Math.random() * pokemap.size())).getName();
+            String toFetch2 = pokemap.get((int) (Math.random() * pokemap.size()))
+                    .getName();
 
             //set names
             opponentName.setText(toFetch);
@@ -155,7 +185,7 @@ public class BattleFragment extends Fragment {
             opponentLevel.setText(POKEMON_LEVEL);
             userLevel.setText(POKEMON_LEVEL);
 
-            Log.d("pokemon", toFetch);
+            Log.d("Pokemon", toFetch);
             fetch.execute(toFetch);
             fetch2.execute(toFetch2);
         }
@@ -164,7 +194,7 @@ public class BattleFragment extends Fragment {
     /**
      * Created by dj0wns on 8/28/15.
      * Intended to populate the national dex to allow for easy translation from
-     * pokemon number to name
+     * Pokemon number to name
      */
     public class DownloadMoveData extends AsyncTask<Void, Void, Void> {
 

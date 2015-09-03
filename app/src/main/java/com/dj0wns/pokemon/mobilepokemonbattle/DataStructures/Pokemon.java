@@ -1,14 +1,17 @@
 package com.dj0wns.pokemon.mobilepokemonbattle.DataStructures;
 
+import android.util.Log;
+
 /**
  * Created by dj0wns on 9/2/15.
  */
-public class pokemon {
+public class Pokemon {
     private String name, type1, type2;
     private int total, hp, attack, defense, specialAttack, specialDefense, speed;
 
-    public pokemon(String name, String type1, String type2, int total, int hp,
-                   int attack, int defense, int specialAttack, int specialDefense, int speed) {
+    public Pokemon(String name, String type1, String type2, int total, int hp,
+                   int attack, int defense, int specialAttack, int specialDefense,
+                   int speed) {
         this.name = name;
         this.type1 = type1;
         this.type2 = type2;
@@ -22,7 +25,18 @@ public class pokemon {
     }
 
     public String getName() {
+        Log.d(name, name + " "
+                + type1 + " "
+                + type2 + " "
+                + total + " "
+                + hp + " "
+                + attack + " "
+                + defense + " "
+                + specialAttack + " "
+                + specialDefense + " "
+                + speed + " ");
         return name;
+
     }
 
     public String getType1() {

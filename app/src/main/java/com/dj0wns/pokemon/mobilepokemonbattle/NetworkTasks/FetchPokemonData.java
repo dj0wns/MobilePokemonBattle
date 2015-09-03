@@ -18,7 +18,7 @@ import java.net.URL;
 
 /**
  * Created by dj0wns on 8/28/15.
- * Takes in a name and set the image view to that pokemon
+ * Takes in a name and set the image view to that Pokemon
  */
 public class FetchPokemonData extends AsyncTask<String, Void, Bitmap> {
 
@@ -86,7 +86,7 @@ public class FetchPokemonData extends AsyncTask<String, Void, Bitmap> {
         String moveName;
         if(slots != null ){
             if(moveList != null){
-                Elements moves = moveList.select("td a[title*=\"(move)\"] span");
+                Elements moves = moveList.select("td a[title*=\"(Move)\"] span");
                 for(int i = 0; i < slots.length && i < moves.size(); i++){
                     moveName = moves.get(i).text().toLowerCase();
                     Log.d("moveName", moveName);
